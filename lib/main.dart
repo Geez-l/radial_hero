@@ -1,13 +1,7 @@
-// ignore_for_file: deprecated_member_use
-// https://www.geeksforgeeks.org/flutter-radial-hero-animation/
-
-// Radial Hero Animation
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
-//  Radial transformation means turning
-// a circular shape into a square shape
 void main() {
   runApp(
     const MaterialApp(
@@ -25,17 +19,14 @@ class Photo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // container of the image
     return Material(
-      color: Colors.purple.withOpacity(0.25),
-      // gestures handled by inkwell
       child: InkWell(
         onTap: onTap,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints size) {
             return Image.asset(
               photo,
-              fit: BoxFit.contain,
+              fit: BoxFit.cover,
             );
           },
         ),
@@ -45,29 +36,22 @@ class Photo extends StatelessWidget {
 }
 
 class RadialExpansion extends StatelessWidget {
-  // used to wrap the hero
-  RadialExpansion({
+  const RadialExpansion({
     super.key,
     required this.minRadius,
     required this.maxRadius,
     this.child,
-  })  : clipTween = Tween<double>(
-          begin: 2.0 * minRadius,
-          end: 2.0 * (maxRadius / math.sqrt2),
-        );
+  });
 
   final double minRadius;
   final double maxRadius;
-  final Tween<double> clipTween;
   final Widget? child;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints size) {
-        final double t =
-            (size.biggest.width / 2.0 - minRadius) / (maxRadius - minRadius);
-        final double rectClipExtent = clipTween.transform(t);
+        final double rectClipExtent = 2.0 * (maxRadius / math.sqrt2);
         return ClipOval(
           child: Center(
             child: SizedBox(
@@ -97,41 +81,61 @@ class RadialExpansionDemo extends StatelessWidget {
 
   Widget _buildPage(
       BuildContext context, String imageName, String description) {
-    return Container(
-      color: Colors.white,
-      child: Center(
-        child: Card(
-          elevation: 8.0,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: kMaxRadius * 2.0,
-                height: kMaxRadius * 2.0,
-                child: Hero(
-                  createRectTween: _createRectTween,
-                  tag: imageName,
-                  child: RadialExpansion(
-                    minRadius: kMinRadius,
-                    maxRadius: kMaxRadius,
-                    child: Photo(
-                      photo: imageName,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
+    return Scaffold(
+      appBar: AppBar(
+         backgroundColor: const Color.fromARGB(255, 130, 111, 163),
+        centerTitle: true,
+        title: const Text('Radial Hero Animations'),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("lib/assets/bg.jpg"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Center(
+              child: Card(
+                elevation: 8.0,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: kMaxRadius * 2.0,
+                      height: kMaxRadius * 2.0,
+                      child: Hero(
+                        createRectTween: _createRectTween,
+                        tag: imageName,
+                        child: RadialExpansion(
+                          minRadius: kMinRadius,
+                          maxRadius: kMaxRadius,
+                          child: Photo(
+                            photo: imageName,
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    Text(
+                      description,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                      // ignore: deprecated_member_use
+                      textScaleFactor: 2.0,
+                    ),
+                    const SizedBox(height: 30.0),
+                  ],
                 ),
               ),
-              Text(
-                description,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                textScaleFactor: 2.0,
-              ),
-              const SizedBox(height: 16.0),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -151,7 +155,6 @@ class RadialExpansionDemo extends StatelessWidget {
             photo: imageName,
             onTap: () {
               Navigator.of(context).push(
-                // build the destination of the hero
                 PageRouteBuilder<void>(
                   pageBuilder: (BuildContext context,
                       Animation<double> animation,
@@ -177,28 +180,51 @@ class RadialExpansionDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // speed of the animation
     timeDilation = 5.0;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 130, 111, 163),
+        backgroundColor: const Color.fromARGB(255, 130, 111, 163),
         centerTitle: true,
         title: const Text('Radial Hero Animation'),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(40.0),
-        alignment: FractionalOffset.bottomLeft,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // assets
-            _buildHero(context, 'lib/assets/r1.jpg', 'The Kingdom of the Wicked'),
-            _buildHero(context, 'lib/assets/r2.jpg', 'Invisible life of Addie LaRue'),
-            _buildHero(context, 'lib/assets/r3.jpg', 'The Cruel Prince'),
-            _buildHero(context, 'lib/assets/r4.jpg', 'One Dark Window'),
-          ],
-        ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("lib/assets/bg.jpg"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(40.0),
+            alignment: FractionalOffset.bottomLeft,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'YA Fiction Books',
+                  style: TextStyle(
+                    color: Colors.purple,
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildHero(context, 'lib/assets/r1.jpg','The Kingdom of the Wicked'),
+                    _buildHero(context, 'lib/assets/r2.jpg','Invisible life of Addie LaRue'),
+                    _buildHero(context, 'lib/assets/r3.jpg', 'The Cruel Prince'),
+                    _buildHero(context, 'lib/assets/r4.jpg', 'One Dark Window'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

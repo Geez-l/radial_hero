@@ -65,6 +65,7 @@ flutter:
     - lib/assets/r3.jpg
     - lib/assets/r4.jpg
     - lib/assets/corn.png
+    - lib/assets/bg.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
